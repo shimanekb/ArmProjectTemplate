@@ -1,0 +1,115 @@
+#!/bin/bash
+
+#CONSTANTS
+export HW_NAME=$1
+
+#Help functions
+function usage() {
+	echo "Usage: make_and_run [OPTIONS]... [HW_NAME]"
+	echo "Will clean, compile, and run an assembly program by HW_NAME."
+	echo "HW_NAME is, the name of you homework file. Usually, HW_NAME = hw from hw.s"
+	echo -e "Example: ./make_and_run hw\n"
+}
+
+function help() {
+	echo "Options:"
+	echo "    -h     help"
+}
+#Options
+while getopts "h" opt; do
+	case "${opt}" in
+		h) usage;
+		   help;
+		   exit 0
+		   ;;
+		*) echo "INVALID ARG"
+		   usage;
+		   exit 1
+		   ;;
+	esac
+done
+
+function check_arg() {
+	if [[ -z "$HW_NAME" ]]; then
+		echo "Need Homework name"
+		usage;
+		exit 1
+	fi
+}
+
+function clean() {
+	echo "****************************************"
+	echo "Cleaning files for new compiled program."
+	echo -e "****************************************\n"
+
+	if [[ -f ${HW_NAME}.bin ]]; then
+		echo "Cleaning bin file"
+		rm *.bin
+	fi
+
+	if [[ -f ${HW_NAME}.elf ]]; then
+		echo "Cleaning elf file"
+		rm *.elf
+	fi
+
+	if [[ -f ${HW_NAME}.list ]]; then
+		echo "Cleaning list file"
+		rm *.list
+	fi
+
+	if [[ -f ${HW_NAME}.o ]]; then
+		echo "Cleaning object file"
+		rm *.o
+	fi
+
+	echo "****************************************"
+	echo "Cleaning Finished."
+	echo -e "****************************************\n"
+}
+
+function run_make() {
+	echo "****************************************"
+	echo "Starting Make."
+	echo -e "****************************************\n"
+
+	make
+
+	echo "****************************************"
+	echo "Finished running Make."
+	echo -e "****************************************\n"
+}
+
+function run_qemu() {
+	echo "****************************************"
+	echo "Starting Qemu."
+	echo -e "****************************************\n"
+
+	qemu-system-arm -s -M versatilepb -daemonize -m 128M -d in_asm,cpu,exec -kernel ${HW_NAME}.bin
+
+	echo "****************************************"
+	echo  -e "Running gdb-multiarch"
+	echo "To start program: break _start"
+	echo "c for continue, 'i r' for register values after c"
+	echo -e "****************************************\n"
+
+	gdb-multiarch --eval-command="target remote :1234" --eval-command="set architecture arm" --eval-command="symbol-file ${HW_NAME}.elf"
+}
+
+function kill_qemu() {
+	echo "****************************************"
+	echo "Killing Qemu."
+	echo -e "****************************************\n"
+
+	ps axf | grep qemu | grep -v grep | awk '{print "kill -9 " $1}' | sh
+}
+
+function main() {
+    check_arg;
+	clean;
+	run_make;
+	run_qemu;
+	kill_qemu;
+}
+
+#Main function call
+main;
