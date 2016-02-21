@@ -1,5 +1,5 @@
 # ArmProjectTemplate
-Project template for running simple arm programs
+Project template for running simple arm programs in GDB.
 
 ##Prerequisites
 1. 32-bit Linux operating system. I used Ubuntu.
