@@ -8,8 +8,10 @@ Project template for running simple arm programs in GDB.
 3. Install GCC Compiler
   - Installation steps: 
     1. wget https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
-    2. tar -xjvf gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2 sudo mv gcc-arm-none-eabi-4_7-2013q3 /opt/ARM
-    3. echo "PATH=$PATH:/opt/ARM/bin" >> /home/"$(whoami)"/.bashrc source /home/"$(whoami)"/.bashrc
+    1. tar -xjvf gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2 
+    2. sudo mv gcc-arm-none-eabi-4_7-2013q3 /opt/ARM
+    3. echo "PATH=$PATH:/opt/ARM/bin" >> /home/"$(whoami)"/.bashrc 
+    4. source /home/"$(whoami)"/.bashrc
 4. Install GDB
   - Install command: *sudo apt-get install gdb-multiarch*
 
